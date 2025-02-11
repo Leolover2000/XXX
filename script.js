@@ -1,38 +1,56 @@
-document.addEventListener("DOMContentLoaded", function () {
-    const words = ["PYTHON", "GITHUB", "CROSSWORD"];
-    const hints = ["Programmeertaal", "Platform voor ontwikkelaars", "Soort puzzel"];
-    const gridContainer = document.getElementById("grid");
-    const hintsContainer = document.getElementById("hints");
+const puzzleData = {
+    grid: [
+        ["B", "L", "A", "N", "K", null, "H", "I", "N", "T"],
+        [null, null, "C", "O", "D", "E", null, null, "P", "U"],
+        ["D", "A", "T", "A", null, "G", "A", "M", "E", null]
+    ],
+    hints: [
+        { number: 1, hint: "Iets zonder inhoud", direction: "horizontal" },
+        { number: 2, hint: "Programmeertaal", direction: "horizontal" },
+        { number: 3, hint: "Informatie", direction: "horizontal" }
+    ]
+};
 
-    // Grid genereren
-    words.forEach((word, rowIndex) => {
-        word.split("").forEach((letter, colIndex) => {
-            const cell = document.createElement("input");
-            cell.type = "text";
-            cell.maxLength = 1;
-            cell.classList.add("cell");
-            cell.dataset.letter = letter;
-            gridContainer.appendChild(cell);
+document.addEventListener("DOMContentLoaded", function () {
+    const puzzleContainer = document.getElementById("puzzle-container");
+    const hintsContainer = document.getElementById("hints");
+    
+    puzzleContainer.style.gridTemplateColumns = `repeat(${puzzleData.grid[0].length}, 40px)`;
+    
+    puzzleData.grid.forEach(row => {
+        row.forEach(cell => {
+            const cellElement = document.createElement("input");
+            cellElement.type = "text";
+            cellElement.maxLength = 1;
+            cellElement.classList.add("cell");
+            if (cell === null) {
+                cellElement.classList.add("black-cell");
+                cellElement.disabled = true;
+            }
+            puzzleContainer.appendChild(cellElement);
         });
     });
-
-    gridContainer.style.gridTemplateColumns = `repeat(${words[0].length}, 40px)`;
-
-    // Hints toevoegen
-    hints.forEach((hint, index) => {
+    
+    puzzleData.hints.forEach(hint => {
         const hintElement = document.createElement("p");
-        hintElement.innerHTML = `<strong>Hint ${index + 1}:</strong> ${hint}`;
+        hintElement.innerHTML = `<strong>${hint.number}:</strong> ${hint.hint}`;
         hintsContainer.appendChild(hintElement);
     });
 });
 
 function checkSolution() {
-    let cells = document.querySelectorAll(".cell");
+    let cells = document.querySelectorAll(".cell:not(.black-cell)");
     let correct = true;
-    cells.forEach(cell => {
-        if (cell.value.toUpperCase() !== cell.dataset.letter) {
-            correct = false;
-        }
+    let index = 0;
+    puzzleData.grid.forEach(row => {
+        row.forEach(cell => {
+            if (cell !== null) {
+                if (cells[index].value.toUpperCase() !== cell) {
+                    correct = false;
+                }
+                index++;
+            }
+        });
     });
     document.getElementById("result").innerText = correct ? "Correct!" : "Probeer opnieuw.";
 }
