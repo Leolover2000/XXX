@@ -2,9 +2,9 @@ body {
     font-family: Arial, sans-serif;
     text-align: center;
 }
-.grid {
+#puzzle-container {
     display: grid;
-    gap: 5px;
+    grid-gap: 5px;
     justify-content: center;
     margin: 20px auto;
 }
@@ -14,6 +14,9 @@ body {
     border: 1px solid black;
     text-align: center;
     font-size: 24px;
+}
+.black-cell {
+    background-color: black;
 }
 .hint-list {
     margin-top: 20px;
